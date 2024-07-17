@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenStreetMap Autocomplete Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #search-container {
+            position: relative;
+        }
+        #search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #suggestions {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ddd;
+            border-top: none;
+            position: absolute;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+        }
+        #suggestions li {
+            padding: 10px;
+            cursor: pointer;
+        }
+        #suggestions li:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>OpenStreetMap Autocomplete Demo</h1>
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="Search for a location in India">
+        <ul id="suggestions"></ul>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const suggestionsList = document.getElementById('suggestions');
+
+        searchInput.addEventListener('input', function() {
+            if (this.value.length > 2) {
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${this.value}&countrycodes=in`;
+                
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestionsList.innerHTML = '';
+                        data.forEach(item => {
+                            const li = document.createElement('li');
+                            li.textContent = item.display_name;
+                            li.addEventListener('click', function() {
+                                searchInput.value = this.textContent;
+                                suggestionsList.innerHTML = '';
+                            });
+                            suggestionsList.appendChild(li);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+            } else {
+                suggestionsList.innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>
