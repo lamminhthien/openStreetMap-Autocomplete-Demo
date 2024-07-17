@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenStreetMap Autocomplete Demo</title>
+    <title>OpenStreetMap Autocomplete Demo with Geolocation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,6 +13,7 @@
         }
         #search-container {
             position: relative;
+            margin-bottom: 20px;
         }
         #search-input {
             width: 100%;
@@ -38,18 +39,25 @@
         #suggestions li:hover {
             background-color: #f0f0f0;
         }
+        #geolocation-info {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
-    <h1>OpenStreetMap Autocomplete Demo</h1>
+    <h1>OpenStreetMap Autocomplete Demo with Geolocation</h1>
     <div id="search-container">
         <input type="text" id="search-input" placeholder="Search for a location in India">
         <ul id="suggestions"></ul>
     </div>
+    <div id="geolocation-info"></div>
 
     <script>
         const searchInput = document.getElementById('search-input');
         const suggestionsList = document.getElementById('suggestions');
+        const geolocationInfo = document.getElementById('geolocation-info');
 
         searchInput.addEventListener('input', function() {
             if (this.value.length > 2) {
@@ -65,6 +73,7 @@
                             li.addEventListener('click', function() {
                                 searchInput.value = this.textContent;
                                 suggestionsList.innerHTML = '';
+                                displayGeolocationInfo(item);
                             });
                             suggestionsList.appendChild(li);
                         });
@@ -76,6 +85,18 @@
                 suggestionsList.innerHTML = '';
             }
         });
+
+        function displayGeolocationInfo(item) {
+            geolocationInfo.innerHTML = `
+                <h2>Geolocation Information</h2>
+                <p><strong>Name:</strong> ${item.display_name}</p>
+                <p><strong>Latitude:</strong> ${item.lat}</p>
+                <p><strong>Longitude:</strong> ${item.lon}</p>
+                <p><strong>Type:</strong> ${item.type}</p>
+                <p><strong>Class:</strong> ${item.class}</p>
+                <p><strong>OSM ID:</strong> ${item.osm_id}</p>
+            `;
+        }
     </script>
 </body>
 </html>
